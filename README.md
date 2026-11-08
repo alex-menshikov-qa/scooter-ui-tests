@@ -2,36 +2,42 @@
 
 UI test automation project for a scooter rental web application.
 
-The project demonstrates automated browser testing using Python, Pytest, Selenium WebDriver, Page Object Model, and Allure.
+The project demonstrates automated browser testing with Python, pytest, Selenium WebDriver, the Page Object Model, and Allure reports: parametrized user flows, page objects with locators grouped by page, and step-by-step reporting.
 
 ## Tech stack
 
 * Python
-* Pytest
-* Selenium WebDriver
+* pytest
+* Selenium WebDriver (Firefox, headless)
 * Page Object Model
 * Allure
-* Firefox headless mode
 
-## Test coverage
+## Test suite at a glance
 
-The test suite covers the main user-facing flows of the application:
+12 tests, including parametrized cases:
 
-* FAQ section on the main page
-* scooter order flow
-* order form validation and completion
-* navigation via the application logo
-* navigation to the external Dzen page
+| File | Tests | What is covered |
+|---|---|---|
+| `test_main_page.py` | 8 | FAQ accordion: each of the 8 questions opens the expected answer text |
+| `test_order_page.py` | 2 | end-to-end order flow from both "Order" buttons (header and page bottom), with two data sets: two-step form, metro-station search, date picker, rental period, confirmation |
+| `test_switching_page.py` | 2 | logo navigation: the product logo returns to the main page; the company logo opens an external page in a new tab |
 
 ## Project structure
 
 * `tests/` - UI test cases
-* `pages/` - Page Object classes and page-specific methods
+* `pages/` - Page Object classes with page-specific actions
 * `locators/` - Selenium locators grouped by page
-* `conftest.py` - Pytest fixtures and browser setup
+* `conftest.py` - pytest fixtures: headless Firefox setup and page objects
 * `data.py` - test data and configurable URLs
-* `pytest.ini` - Pytest configuration
+* `pytest.ini` - pytest configuration (verbose output, Allure results directory)
 * `requirements.txt` - project dependencies
+* `.env.example` - environment variables and their default values
+
+## Requirements
+
+* Python 3.10+
+* Mozilla Firefox. Selenium Manager downloads a matching GeckoDriver automatically.
+* [Allure CLI](https://allurereport.org/docs/install/), only to view reports
 
 ## How to run
 
@@ -47,43 +53,27 @@ Run tests:
 pytest
 ```
 
-Run tests with detailed output:
+Allure results are written to `allure_results/` on every run (set in `pytest.ini`). To open the report:
 
 ```bash
-pytest -v
-```
-
-Run tests with Allure results:
-
-```bash
-pytest --alluredir=allure_results
 allure serve allure_results
 ```
 
 ## Environment
 
-By default, the tests run against the public demo site:
+| Variable | Default | Purpose |
+|---|---|---|
+| `BASE_URL` | `https://qa-scooter.praktikum-services.ru/` | Application under test |
+| `DZEN_URL` | `https://dzen.ru/?yredirect=true` | Expected external page opened by the company logo |
 
-```text
-https://qa-scooter.praktikum-services.ru/
-```
-
-The base URL can be overridden with environment variables:
+Example:
 
 ```bash
 BASE_URL=https://example.com pytest
 ```
 
-The external Dzen URL can also be overridden:
-
-```bash
-DZEN_URL=https://example.com pytest
-```
-
-Default values are listed in `.env.example`.
-
 ## Notes
 
 This repository is a portfolio version of a UI test automation project.
 
-The tests depend on an external public demo environment, so availability and behavior of the target site may affect test results.
+The suite runs against a public demo environment that this project does not control, so the availability and behavior of the target site, and of the external page in the logo test, may affect results.
